@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  integer_field: 
+  string_field: MyString
+  float_field: 1.5
+  snake_case: MyString
+  camelCase: MyString
+  datetime_field: 2018-09-07 16:20:11
+
+two:
+  integer_field: 
+  string_field: MyString
+  float_field: 1.5
+  snake_case: MyString
+  camelCase: MyString
+  datetime_field: 2018-09-07 16:20:11

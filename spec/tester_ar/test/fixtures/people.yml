@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account: one
+  snake_case: MyString
+  camelCase: MyString
+
+two:
+  account: two
+  snake_case: MyString
+  camelCase: MyString
