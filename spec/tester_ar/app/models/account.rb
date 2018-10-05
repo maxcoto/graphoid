@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Account < ApplicationRecord
   include Graphoid::Queries
   include Graphoid::Mutations
@@ -27,8 +29,8 @@ class Account < ApplicationRecord
   has_many :labels, dependent: :destroy
   belongs_to :house, optional: true
 
-  belongs_to :created_by, class_name: "User", optional: true
-  belongs_to :updated_by, class_name: "User", optional: true
+  belongs_to :created_by, class_name: 'User', optional: true
+  belongs_to :updated_by, class_name: 'User', optional: true
 
   has_and_belongs_to_many :users
 end

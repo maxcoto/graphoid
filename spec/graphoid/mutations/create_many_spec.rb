@@ -1,11 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe "MutationCreateMany", :type => :request do
-
+describe 'MutationCreateMany', type: :request do
   before { Account.delete_all }
-  subject { Helper.resolve(self, "createAccounts", @query) }
+  subject { Helper.resolve(self, 'createAccounts', @query) }
 
-  it "creates many objects" do
+  it 'creates many objects' do
     @query = %{
       mutation {
         createAccounts(data: [
@@ -17,8 +18,7 @@ describe "MutationCreateMany", :type => :request do
       }
     }
 
-    expect(Account.find(subject[0]["id"])).to be
-    expect(Account.find(subject[1]["id"])).to be
+    expect(Account.find(subject[0]['id'])).to be
+    expect(Account.find(subject[1]['id'])).to be
   end
-
 end

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Graphoid
   class Attribute
     attr_reader :name, :type
 
-    PERMS = [:read, :create, :update, :delete]
+    PERMS = %i[read create update delete]
 
     def initialize(name:, type:)
       @name = name.to_s
@@ -21,6 +23,12 @@ module Graphoid
     def relation?
       false
     end
+
+    def precreate(value)
+      { name.to_sym => value }
+    end
+
+    def create(_, _, _); end
 
     class << self
       def fields_of(model, action = :read)

@@ -1,62 +1,76 @@
 # Graphoid
-This gem is used to generate a full GraphQL api using introspection of MongoId models.
+This gem is used to generate a full GraphQL API using introspection of Mongoid or ActiveRecord models.
+After installing it, you will have create, update, delete, and query actions on any rails models you want.
 
 ## Dependency
 This gem depends on the graphql gem for rails https://github.com/rmosolgo/graphql-ruby
-So it is required to have it and install it using
-```bash
-rails generate graphql:install
-```
-
-## Usage
-Require all the models in which you want to have basic find one, find many, create, update and delete actions on.
-
-Create the file `config/initializers/Graphoid.rb`
-
-And require the models like this:
-
-```ruby
-Graphoid.configure do |config|
-  config.driver = :mongoid
-  config.driver = :active_record
-end
-Graphoid.initialize
-```
+So please install that gem first before continuing
 
 ## Installation
-Add this line to your application's Gemfile:
+Add this line to your Gemfile:
 
 ```ruby
 gem 'graphoid'
 ```
 
-And then execute:
 ```bash
-$ bundle
+$ bundle install
 ```
 
-Or install it yourself as:
-```bash
-$ gem install graphoid
-```
-
-Then you can determine which queries and mutations should be created in `app/graphql/types/query_type.rb`
+## Configuration
+Create the file `config/initializers/graphoid.rb`
+And configure the database you want to use in it.
 
 ```ruby
-include Graphoid::Queries
-include Graphoid::Mutations
+Graphoid.configure do |config|
+  config.driver = :mongoid
+  # or
+  config.driver = :active_record
+end
 ```
 
-And which mutations should be created in `app/graphql/types/mutation_type.rb`
+## Usage
+You can determine which models will be visible in the API by including the Graphoid Queries and Mutations
 
 ```ruby
-include Graphoid::Graphield
+class Person
+  include Graphoid::Queries
+  include Graphoid::Mutations
+end
+```
+
+You can also include a special concern that will let you create virtual fields and forbid access to existing fields
+```ruby
+class Person
+  include Graphoid::Graphield
+
+  graphield :full_name, String # virtual fields need to resolve as a method
+  graphorbid :balance # attribute balance will not be exposed in the API
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+end
 ```
 
 ## Contributing
-Figure out the driver
 Functionality to sort top level models by association values
 Filter by Array or Hash => The cases are failing, implementation correction needed.
+Revise TODOs in the code
+Make a tutorial video
+Fix Rubocop errors
+Live Reload
+AR eager load
+Relation with aliases tests
+Aggregations
+Remove config / auto-setup AR-Mongo
+Write division for "every" in Mongoid and AR
+Permissions on fields
+has_one_through implementation
+has_many_selves (employee) tests
+has_and_belongs_to_many_selves (followers) tests
+Embedded::Many filtering implementation
+Embedded::One filtering with OR/AND
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

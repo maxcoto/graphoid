@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Queries
     module Processor
@@ -8,7 +10,7 @@ module Graphoid
         end
 
         def execute_array(scope, list, action)
-          if action == "OR"
+          if action == 'OR'
             scope = Graphoid.driver.execute_or(scope, list)
           else
             list.each { |object| scope = execute(scope, object) }
@@ -17,7 +19,7 @@ module Graphoid
         end
 
         def process(scope, value, key = nil)
-          if key && ["OR", "AND"].exclude?(key)
+          if key && %w[OR AND].exclude?(key)
             operation = Operation.new(scope, key, value)
             filter = operation.resolve
             return Graphoid.driver.execute_and(scope, filter)
@@ -25,12 +27,12 @@ module Graphoid
 
           if operation.nil? || operation.type == :attribute
             return execute(scope, value) if value.is_a?(Hash)
-            if value.is_a?(Array) && ["in", "nin"].exclude?(operation&.operator)
-              return execute_array(scope, value, key) 
+            if value.is_a?(Array) && %w[in nin].exclude?(operation&.operator)
+              return execute_array(scope, value, key)
             end
           end
         end
-        
+
         def children_of(selection)
           selection.scoped_children.values[0]
         end

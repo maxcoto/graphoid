@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Filters
-
     LIST = {}
 
     class << self
@@ -19,14 +20,14 @@ module Graphoid
             argument(:OR,  -> { types[m] })
             argument(:AND, -> { types[m] })
 
-            operators = ["lt", "lte", "gt", "gte", "contains", "not"]
-            operators.push("regex") if Graphoid.configuration.driver == :mongoid
+            operators = %w[lt lte gt gte contains not]
+            operators.push('regex') if Graphoid.configuration.driver == :mongoid
 
             operators.each do |suffix|
               argument "#{name}_#{suffix}", type
             end
 
-            ["in", "nin"].each do |suffix|
+            %w[in nin].each do |suffix|
               argument "#{name}_#{suffix}", types[type]
             end
           end
@@ -41,17 +42,15 @@ module Graphoid
             relation_name = Utils.camelize(name)
 
             if Relation.new(relation).many?
-              ["some", "none", "every"].each do |suffix|
+              %w[some none every].each do |suffix|
                 argument "#{relation_name}_#{suffix}", relation_filter
               end
             else
-              argument "#{relation_name}", relation_filter
+              argument relation_name.to_s, relation_filter
             end
           end
-
         end
       end
-
     end
   end
 end

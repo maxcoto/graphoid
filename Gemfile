@@ -1,27 +1,20 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-# Declare your gem's dependencies in Graphoid.gemspec.
-# Bundler will treat runtime dependencies like base dependencies, and
-# development dependencies will be added by default to the :development group.
+source 'https://rubygems.org'
+ruby '2.5.0'
+
 gemspec
 
-# Declare any dependencies that are still in development here instead of in
-# your gemspec. These might include edge Rails or gems from your path or
-# Git. Remember to move these dependencies to your gemspec before releasing
-# your gem to rubygems.org.
-
-# To use a debugger
-
-gem 'byebug', group: [:development, :test]
-gem 'rspec', group: [:development, :test]
-gem 'rspec-rails', group: [:development, :test]
 gem 'graphql'
-gem 'jwt'
+
+group :development, :test do
+  gem 'byebug'
+end
 
 group :test do
-  gem 'mongoid', '~>6'
-  gem 'mongoid-compatibility'
+  gem 'mongoid'
   gem 'mongoid-rspec'
-  gem 'mongoid-enum', github: 'outboundworks/mongoid-enum'
-  gem 'apollo_upload_server', '2.0.0.beta.1'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'sqlite3'
 end

@@ -1,5 +1,6 @@
-module Graphoid
+# frozen_string_literal: true
 
+module Graphoid
   class Relation
     attr_reader :name, :klass, :type, :inverse_name
 
@@ -11,7 +12,7 @@ module Graphoid
       @type = Graphoid.driver.relation_type(relation)
     end
 
-    [:has_and_belongs_to_many, :through, :has_many, :belongs_to, :has_one, :embeds_one, :embeds_many, :embedded_in].each do |type|
+    %i[has_and_belongs_to_many through has_many belongs_to has_one embeds_one embeds_many embedded_in].each do |type|
       type = :"#{type}?"
       define_method type do
         Graphoid.driver.send(type, @type)
@@ -43,13 +44,17 @@ module Graphoid
       embeds_one? || embeds_many? || embedded_in?
     end
 
-    def resolve(o)
-      if one?
-        return Graphoid.driver.relate_one(o.scope, o.operand, o.value)
+    def precreate(_); end
+
+    def create(_, _, _); end
+
+    def resolve(operation)
+      if one? || operation.operand.embedded?
+        return operation.operand.exec(operation.scope, operation.value)
       end
 
       if many?
-        return Graphoid.driver.relate_many(o.scope, o.operand, o.value, o.operator)
+        return Graphoid.driver.relate_many(operation.scope, operation.operand, operation.value, operation.operator)
       end
     end
 

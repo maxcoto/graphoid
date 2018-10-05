@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Inputs
     LIST = {}
 
     class << self
-      def generate model
+      def generate(model)
         LIST[model] ||= GraphQL::InputObjectType.define do
           name = Utils.graphqlize(model.name)
           name("#{name}Input")
           description("Generated model input for #{name}")
 
           Attribute.fields_of(model).each do |field|
-            unless field.name.start_with?("_")
-              type = Graphoid::Mapper.convert(field)
-              name = Utils.camelize(field.name)
+            next if field.name.start_with?('_')
 
-              argument(name, type)
-            end
+            type = Graphoid::Mapper.convert(field)
+            name = Utils.camelize(field.name)
+
+            argument(name, type)
           end
 
           Relation.relations_of(model).each do |name, relation|

@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe "MutationCreateNested", :type => :request do
-
+describe 'MutationCreateNested', type: :request do
   before { Account.delete_all }
-  subject { Helper.resolve(self, "createAccount", @query) }
+  subject { Helper.resolve(self, 'createAccount', @query) }
 
-  # TODO: MISSING MANY TO MANY ?
-  it "creates one object with referenced relations" do
+  it 'creates one object with referenced relations' do
     @query = %{
       mutation {
         createAccount(data: {
@@ -26,16 +26,16 @@ describe "MutationCreateNested", :type => :request do
       }
     }
 
-    persisted = Account.find(subject["id"])
+    persisted = Account.find(subject['id'])
     persisted.reload
 
-    expect(persisted.person.name).to eq("Bryan")
-    expect(persisted.labels[0].name).to eq("Kevin")
+    expect(persisted.person.name).to eq('Bryan')
+    expect(persisted.labels[0].name).to eq('Kevin')
     expect(persisted.labels[1].amount).to eq(18.0)
-    expect(persisted.house.name).to eq("Alesi")
+    expect(persisted.house.name).to eq('Alesi')
   end
 
-  it "creates objects in a many to many referenced relation" do
+  it 'creates objects in a many to many referenced relation' do
     @query = %{
       mutation {
         createAccount(data: {
@@ -49,12 +49,12 @@ describe "MutationCreateNested", :type => :request do
       }
     }
 
-    persisted = Account.find(subject["id"])
+    persisted = Account.find(subject['id'])
     persisted.reload
-    expect(persisted.users[0].name).to eq("maxi")
+    expect(persisted.users[0].name).to eq('maxi')
   end
 
-  it "creates objects in a many to many through referenced relation" do
+  it 'creates objects in a many to many through referenced relation' do
     @query = %{
       mutation {
         createPlayer(data: {
@@ -68,16 +68,15 @@ describe "MutationCreateNested", :type => :request do
       }
     }
 
-    execution = Helper.resolve(self, "createPlayer", @query)
-
-    if ENV['DRIVER'] != "mongo"
-      persisted = Player.find(execution["id"])
+    if ENV['DRIVER'] != 'mongo'
+      execution = Helper.resolve(self, 'createPlayer', @query)
+      persisted = Player.find(execution['id'])
       persisted.reload
-      expect(persisted.teams[0].name).to eq("maxi")
+      expect(persisted.teams[0].name).to eq('maxi')
     end
   end
 
-  it "creates one object with embedded relations" do
+  it 'creates one object with embedded relations' do
     @query = %{
       mutation {
         createAccount(data: {
@@ -96,13 +95,13 @@ describe "MutationCreateNested", :type => :request do
       }
     }
 
-    if ENV['DRIVER'] == "mongo"
-      persisted = Account.find(subject["id"])
+    if ENV['DRIVER'] == 'mongo'
+      persisted = Account.find(subject['id'])
       persisted.reload
 
-      expect(persisted.value.text).to eq("Bryan")
+      expect(persisted.value.text).to eq('Bryan')
 
-      expect(persisted.snakes[0].name).to eq("Kevin")
+      expect(persisted.snakes[0].name).to eq('Kevin')
       expect(persisted.snakes[0].snake_case).to eq(13.5)
       expect(persisted.snakes[1].camelCase).to eq(18.0)
     end

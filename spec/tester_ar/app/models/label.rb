@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Label < ApplicationRecord
   include Graphoid::Queries
   include Graphoid::Mutations

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Graphoid
   class Operation
     attr_reader :scope, :operand, :operator, :value
@@ -31,10 +33,10 @@ module Graphoid
       relations = model.reflect_on_all_associations
 
       relation = relations.find { |r| r.name == key.to_sym }
-      return Relation.new(relation) if relation
+      return Graphoid.driver.class_of(relation).new(relation) if relation
 
       relation = relations.find { |r| r.name == key.underscore.to_sym }
-      return Relation.new(relation) if relation
+      return Graphoid.driver.class_of(relation).new(relation) if relation
     end
   end
 end

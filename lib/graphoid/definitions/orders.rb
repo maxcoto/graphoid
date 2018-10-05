@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Orders
-
     LIST = {}
     @@enum_type = nil
 
@@ -31,13 +32,12 @@ module Graphoid
 
       def enum_type
         @@enum_type ||= GraphQL::EnumType.define do
-          name "OrderType"
+          name 'OrderType'
 
-          value "ASC", "Ascendent"
-          value "DESC", "Descendent"
+          value 'ASC', 'Ascendent'
+          value 'DESC', 'Descendent'
         end
       end
     end
   end
-
 end

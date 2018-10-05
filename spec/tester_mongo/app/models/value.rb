@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Value
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -5,6 +7,7 @@ class Value
   include Graphoid::Mutations
 
   field :text, type: String
+  field :name, type: String
 
   embedded_in :account
 end

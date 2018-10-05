@@ -1,5 +1,4 @@
-require 'graphoid/queries/attribute'
-require 'graphoid/queries/relation'
+# frozen_string_literal: true
 
 require 'graphoid/utils'
 require 'graphoid/grapho'
@@ -8,6 +7,15 @@ require 'graphoid/config'
 require 'graphoid/scalars'
 require 'graphoid/argument'
 require 'graphoid/graphield'
+
+require 'graphoid/operators/attribute'
+require 'graphoid/operators/relation'
+require 'graphoid/operators/inherited/belongs_to'
+require 'graphoid/operators/inherited/embeds_one'
+require 'graphoid/operators/inherited/embeds_many'
+require 'graphoid/operators/inherited/has_many'
+require 'graphoid/operators/inherited/has_one'
+require 'graphoid/operators/inherited/many_to_many'
 
 require 'graphoid/queries/queries'
 require 'graphoid/queries/processor'
@@ -27,24 +35,4 @@ require 'graphoid/definitions/orders'
 require 'graphoid/definitions/filters'
 require 'graphoid/definitions/inputs'
 
-module Graphoid
-  @@graphs = {}
-
-  class << self
-    attr_accessor :driver
-
-    def initialize
-      Graphoid.driver = configuration&.driver
-      Rails.application.eager_load!
-      Graphoid::Scalars.generate
-    end
-
-    def build(model, action = nil)
-      @@graphs[model] ||= Graphoid::Grapho.new(model)
-    end
-
-    def driver=(driver)
-      @driver = driver == :active_record ? ActiveRecordDriver : MongoidDriver
-    end
-  end
-end
+require 'graphoid/main'

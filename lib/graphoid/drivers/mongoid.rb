@@ -1,57 +1,96 @@
+# frozen_string_literal: true
+
 module Graphoid
   module MongoidDriver
     class << self
-      def through?(type)
+      def through?(_type)
         false
       end
 
+      def mongo_constants
+        begin
+          {
+            many_to_many: Mongoid::Relations::Referenced::ManyToMany,
+            has_many:     Mongoid::Relations::Referenced::Many,
+            belongs_to:   Mongoid::Relations::Referenced::In,
+            has_one:      Mongoid::Relations::Referenced::One,
+            embeds_one:   Mongoid::Relations::Embedded::One,
+            embeds_many:  Mongoid::Relations::Embedded::Many,
+            embedded_in:  Mongoid::Relations::Embedded::In
+          }
+        rescue
+          {
+            many_to_many: Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy,
+            has_many:     Mongoid::Association::Referenced::HasMany::Proxy,
+            belongs_to:   Mongoid::Association::Referenced::BelongsTo::Proxy,
+            has_one:      Mongoid::Association::Referenced::HasOne::Proxy,
+            embeds_one:   Mongoid::Association::Embedded::EmbedsOne::Proxy,
+            embeds_many:  Mongoid::Association::Embedded::EmbedsMany::Proxy,
+            embedded_in:  Mongoid::Association::Embedded::EmbeddedIn::Proxy
+          }
+        end
+      end
+
       def has_and_belongs_to_many?(type)
-        type == Mongoid::Relations::Referenced::ManyToMany
+        type == mongo_constants[:many_to_many]
       end
 
       def has_many?(type)
-        type == Mongoid::Relations::Referenced::Many
+        type == mongo_constants[:has_many]
       end
 
       def belongs_to?(type)
-        type == Mongoid::Relations::Referenced::In
+        type == mongo_constants[:belongs_to]
+        
       end
 
       def has_one?(type)
-        type == Mongoid::Relations::Referenced::One
+        type == mongo_constants[:has_one]
       end
 
       def embeds_one?(type)
-        type == Mongoid::Relations::Embedded::One
+        type == mongo_constants[:embeds_one]
       end
 
       def embeds_many?(type)
-        type == Mongoid::Relations::Embedded::Many
+        type == mongo_constants[:embeds_many]
       end
 
       def embedded_in?(type)
-        type == Mongoid::Relations::Embedded::In
+        type == mongo_constants[:embedded_in]
       end
 
       def types_map
         {
-          BSON::ObjectId   => GraphQL::Types::ID,
+          BSON::ObjectId => GraphQL::Types::ID,
           Mongoid::Boolean => GraphQL::Types::Boolean,
-          Graphoid::Upload    => ApolloUploadServer::Upload,
+          # Graphoid::Upload => ApolloUploadServer::Upload,
 
-          Boolean  => GraphQL::Types::Boolean,
-          Float    => GraphQL::Types::Float,
-          Integer  => GraphQL::Types::Int,
-          String   => GraphQL::Types::String,
-          Object   => GraphQL::Types::String,
-          Symbol   => GraphQL::Types::String,
+          Boolean => GraphQL::Types::Boolean,
+          Float => GraphQL::Types::Float,
+          Integer => GraphQL::Types::Int,
+          String => GraphQL::Types::String,
+          Object => GraphQL::Types::String,
+          Symbol => GraphQL::Types::String,
 
           DateTime => Graphoid::Scalars::DateTime,
-          Time     => Graphoid::Scalars::DateTime,
-          Date     => Graphoid::Scalars::DateTime,
-          Array    => Graphoid::Scalars::Array,
-          Hash     => Graphoid::Scalars::Hash
+          Time => Graphoid::Scalars::DateTime,
+          Date => Graphoid::Scalars::DateTime,
+          Array => Graphoid::Scalars::Array,
+          Hash => Graphoid::Scalars::Hash
         }
+      end
+
+      def class_of(relation)
+        {
+          mongo_constants[:many_to_many]  => ManyToMany,
+          mongo_constants[:has_many]      => HasMany,
+          mongo_constants[:has_one]       => HasOne,
+          mongo_constants[:belongs_to]    => BelongsTo,
+          mongo_constants[:embeds_many]   => EmbedsMany,
+          mongo_constants[:embeds_one]    => EmbedsOne,
+          mongo_constants[:embedded_in]   => Relation
+        }[relation.relation] || Relation
       end
 
       def inverse_name_of(relation)
@@ -76,10 +115,10 @@ module Graphoid
 
       def eager_load(selection, model)
         referenced_relations = [
-          Mongoid::Relations::Referenced::ManyToMany,
-          Mongoid::Relations::Referenced::Many,
-          Mongoid::Relations::Referenced::One,
-          Mongoid::Relations::Referenced::In
+          mongo_constants[:many_to_many],
+          mongo_constants[:has_many],
+          mongo_constants[:has_one],
+          mongo_constants[:belongs_to]
         ]
 
         properties = Graphoid::Queries::Processor.children_of(selection)
@@ -96,7 +135,7 @@ module Graphoid
           if (relations & children).empty?
             model = model.includes(name)
           else
-            model = model.includes(name, with: -> (instance) { Graphoid::Queries::Processor.eager_load(subselection, instance) })
+            model = model.includes(name, with: ->(instance) { Graphoid::Queries::Processor.eager_load(subselection, instance) })
           end
         end
 
@@ -114,17 +153,18 @@ module Graphoid
         scope.any_of(list)
       end
 
-      def parse(attribute, value, operator)
+      def parse(attribute, value, operator, prefix = nil)
         field = attribute.name
+        field = "#{prefix}.#{field}" if prefix
         parsed = {}
         case operator
-        when "gt", "gte", "lt", "lte", "in", "nin"
+        when 'gt', 'gte', 'lt', 'lte', 'in', 'nin'
           parsed[field.to_sym.send(operator)] = value
-        when "regex"
+        when 'regex'
           parsed[field.to_sym] = Regexp.new(value.to_s, Regexp::IGNORECASE)
-        when "contains"
+        when 'contains'
           parsed[field.to_sym] = Regexp.new(Regexp.quote(value.to_s), Regexp::IGNORECASE)
-        when "not"
+        when 'not'
           if value.present? && !value.is_a?(Numeric)
             parsed[field.to_sym.send(operator)] = Regexp.new(Regexp.quote(value.to_s), Regexp::IGNORECASE)
           else
@@ -155,20 +195,11 @@ module Graphoid
         field = relation.name
         parsed = {}
 
-        if relation.embeds_one?
-          parsed = relate_embedded(scope, relation, value)
-        end
+        parsed = relate_embedded(scope, relation, value) if relation.embeds_one?
 
-        if relation.belongs_to?
-          ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&:id)
-          parsed["#{field.underscore}_id".to_sym.send(:in)] = ids
-        end
+        parsed = relation.exec(scope, value) if relation.belongs_to?
 
-        if relation.has_one?
-          field_name = relation.inverse_name || scope.name.underscore
-          ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&("#{field_name}_id".to_sym))
-          parsed[:id.in] = ids
-        end
+        parsed = relation.exec(scope, value) if relation.has_one?
 
         parsed
       end
@@ -182,20 +213,20 @@ module Graphoid
         end
 
         if relation.many_to_many?
-          field_name = field_name.to_s.singularize + "_ids"
-          ids = target.map(&(field_name.to_sym))
+          field_name = field_name.to_s.singularize + '_ids'
+          ids = target.map(&field_name.to_sym)
           ids.flatten!.uniq!
         else
-          field_name = field_name.to_s + "_id"
-          ids = target.map(&(field_name.to_sym))
+          field_name = field_name.to_s + '_id'
+          ids = target.map(&field_name.to_sym)
         end
 
         parsed = {}
-        if operator == "none"
+        if operator == 'none'
           parsed[:id.nin] = ids
-        elsif operator == "some"
+        elsif operator == 'some'
           parsed[:id.in] = ids
-        elsif operator == "every"
+        elsif operator == 'every'
           # missing implementation
         end
         parsed

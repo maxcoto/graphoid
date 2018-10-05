@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Utils
     class << self
-      def modelize text
+      def modelize(text)
         graphqlize text.to_s.capitalize.camelize
       end
 
-      def camelize text
+      def camelize(text)
         # we are doing it twice because _id gets translated to Id the first time and to id the second time.
         graphqlize text.to_s.camelize(:lower).camelize(:lower)
       end
 
-      def graphqlize text
+      def graphqlize(text)
         text.to_s.gsub(/::/, '_')
       end
 
@@ -18,7 +20,7 @@ module Graphoid
         fields.keys.map(&:underscore).map(&:to_sym)
       end
 
-      def underscore props, fields = []
+      def underscore(props, fields = [])
         attrs = {}
         props.each do |key, value|
           key = key.underscore if fields.exclude?(key)

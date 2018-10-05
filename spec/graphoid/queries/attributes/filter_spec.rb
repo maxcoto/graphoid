@@ -1,38 +1,38 @@
+# frozen_string_literal: true
+
 # TODO: elaborate more complex cases
 require 'rails_helper'
 
-describe "QueryFilter", :type => :request do
-
+describe 'QueryFilter', type: :request do
   let!(:delete) { Account.delete_all }
-  subject { Helper.resolve(self, "accounts", @query).map { |a| a["id"] } }
+  subject { Helper.resolve(self, 'accounts', @query).map { |a| a['id'] } }
 
   let!(:yesterday) { DateTime.yesterday.to_time.iso8601 }
   let!(:today)     { DateTime.now.iso8601 }
   let!(:tomorrow)  { DateTime.tomorrow.to_time.iso8601 }
 
-  let!(:a0) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday )}
-  let!(:a1) { Account.create!(integer_field: 1, float_field: 4.3, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday )}
-  let!(:a2) { Account.create!(integer_field: 2, float_field: 4.2, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday )}
-  let!(:a3) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'bob', snake_case: 'snaki', camelCase: 'camol', datetime_field: today     )}
-  let!(:a4) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'boc', snake_case: 'snake', camelCase: 'camel', datetime_field: today     )}
-  let!(:a5) { Account.create!(integer_field: 1, float_field: 4.2, string_field: 'bob', snake_case: 'snake', camelCase: 'camel', datetime_field: tomorrow  )}
-  let!(:a6) { Account.create!(integer_field: 1, float_field: 4.2, string_field: 'bob', snake_case: 'snake', camelCase: 'camel', datetime_field: tomorrow  )}
+  let!(:a0) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday) }
+  let!(:a1) { Account.create!(integer_field: 1, float_field: 4.3, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday) }
+  let!(:a2) { Account.create!(integer_field: 2, float_field: 4.2, string_field: 'boc', snake_case: 'snaki', camelCase: 'camol', datetime_field: yesterday) }
+  let!(:a3) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'bob', snake_case: 'snaki', camelCase: 'camol', datetime_field: today) }
+  let!(:a4) { Account.create!(integer_field: 2, float_field: 4.3, string_field: 'boc', snake_case: 'snake', camelCase: 'camel', datetime_field: today) }
+  let!(:a5) { Account.create!(integer_field: 1, float_field: 4.2, string_field: 'bob', snake_case: 'snake', camelCase: 'camel', datetime_field: tomorrow) }
+  let!(:a6) { Account.create!(integer_field: 1, float_field: 4.2, string_field: 'bob', snake_case: 'snake', camelCase: 'camel', datetime_field: tomorrow) }
 
-  it "loads many objects" do
-    @query = %{
+  it 'loads many objects' do
+    @query = %(
       query {
         accounts {
           id
         }
       }
-    }
+    )
 
     expect(subject.size).to eq(7)
   end
 
-  describe "filtering with nested conditions" do
-
-    it "applies an OR and AND on regular fields" do
+  describe 'filtering with nested conditions' do
+    it 'applies an OR and AND on regular fields' do
       @query = %{
         query {
           accounts(where: {
@@ -55,7 +55,7 @@ describe "QueryFilter", :type => :request do
       expect(subject).to eq Helper.ids_of(a1, a2)
     end
 
-    it "applies special conditions fields" do
+    it 'applies special conditions fields' do
       @query = %{
         query {
           accounts(where: {
@@ -73,7 +73,7 @@ describe "QueryFilter", :type => :request do
       expect(subject).to eq Helper.ids_of(a0, a2)
     end
 
-    it "applies _in and _nin conditions fields" do
+    it 'applies _in and _nin conditions fields' do
       @query = %{
         query {
           accounts(where: {

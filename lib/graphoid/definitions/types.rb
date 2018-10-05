@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 module Graphoid
   module Types
-
     LIST = {}
     ENUMS = {}
 
     class << self
       def generate(model)
         Graphoid::Types::Meta ||= GraphQL::ObjectType.define do
-          name("Meta")
-          description("Meta Type")
-          field("count", types.Int)
+          name('Meta')
+          description('Meta Type')
+          field('count', types.Int)
         end
 
         LIST[model] ||= GraphQL::ObjectType.define do
@@ -26,24 +27,24 @@ module Graphoid
               if _field.name.include?('_')
                 define_method :"#{Utils.camelize(_field.name)}" do
                   method_name = _field.name.to_s
-                  self[method_name] || self.send(method_name)
+                  self[method_name] || send(method_name)
                 end
               end
             end
           end
 
-          Relation.relations_of(model).each do |name, relation|
+          Relation.relations_of(model).each do |_, relation|
             relation_class = relation.class_name.safe_constantize
 
             message = "in model #{model.name}: skipping relation #{relation.class_name}"
             unless relation_class
-              STDERR.puts "Graphoid: warning: #{message} because the model name is not valid" if ENV['DEBUG']
+              warn "Graphoid: warning: #{message} because the model name is not valid" if ENV['DEBUG']
               next
             end
 
             relation_type = LIST[relation_class]
             unless relation_type
-              STDERR.puts "Graphoid: warning: #{message} because it was not found as a model" if ENV['DEBUG']
+              warn "Graphoid: warning: #{message} because it was not found as a model" if ENV['DEBUG']
               next
             end
 
@@ -52,32 +53,32 @@ module Graphoid
             model.class_eval do
               if relation.name.to_s.include?('_')
                 define_method :"#{name}" do
-                  self.send(relation.name)
+                  send(relation.name)
                 end
               end
             end
 
-            if relation_type
-              filter = Graphoid::Filters::LIST[relation_class]
-              order  = Graphoid::Orders::LIST[relation_class]
+            next unless relation_type
 
-              if Relation.new(relation).many?
-                plural_name = name.pluralize
+            filter = Graphoid::Filters::LIST[relation_class]
+            order  = Graphoid::Orders::LIST[relation_class]
 
-                field plural_name, types[relation_type] do
-                  Graphoid::Argument.query_many(self, filter, order)
-                  Graphoid::Types.resolve_many(self, relation_class, relation)
-                end
+            if Relation.new(relation).many?
+              plural_name = name.pluralize
 
-                field "_#{plural_name}_meta", Graphoid::Types::Meta do
-                  Graphoid::Argument.query_many(self, filter, order)
-                  Graphoid::Types.resolve_many(self, relation_class, relation)
-                end
-              else
-                field name, relation_type do
-                  argument :where, filter
-                  Graphoid::Types.resolve_one(self, relation_class, relation)
-                end
+              field plural_name, types[relation_type] do
+                Graphoid::Argument.query_many(self, filter, order)
+                Graphoid::Types.resolve_many(self, relation_class, relation)
+              end
+
+              field "_#{plural_name}_meta", Graphoid::Types::Meta do
+                Graphoid::Argument.query_many(self, filter, order)
+                Graphoid::Types.resolve_many(self, relation_class, relation)
+              end
+            else
+              field name, relation_type do
+                argument :where, filter
+                Graphoid::Types.resolve_one(self, relation_class, relation)
               end
             end
           end
@@ -85,26 +86,31 @@ module Graphoid
       end
 
       def resolve_one(field, model, association)
-        field.resolve -> (obj, args, ctx) do
-          filter = args["where"].to_h
+        field.resolve lambda { |obj, args, _ctx|
+          filter = args['where'].to_h
           result = obj.send(association.name)
-          result = Graphoid::Queries::Processor.execute(model.where({ id: result.id }), filter).first if filter.present? && result
+          processor = Graphoid::Queries::Processor
+          if filter.present? && result
+            result = processor.execute(model.where(id: result.id), filter).first
+          end
           result
-        end
+        }
       end
 
-      def resolve_many(field, model, association)
-        field.resolve -> (obj, args, ctx) do
-          filter = args["where"].to_h
-          order = args["order"].to_h
-          limit = args["limit"]
-          skip = args["skip"]
+      def resolve_many(field, _model, association)
+        field.resolve lambda { |obj, args, _ctx|
+          filter = args['where'].to_h
+          order = args['order'].to_h
+          limit = args['limit']
+          skip = args['skip']
+
+          processor = Graphoid::Queries::Processor
 
           result = obj.send(association.name)
-          result = Graphoid::Queries::Processor.execute(result, filter) if filter.present?
+          result = processor.execute(result, filter) if filter.present?
 
           if order.present?
-            order = Graphoid::Queries::Processor.parse_order(obj.send(association.name), order)
+            order = processor.parse_order(obj.send(association.name), order)
             result = result.order(order)
           end
 
@@ -112,7 +118,7 @@ module Graphoid
           result = result.skip(skip) if skip.present?
 
           result
-        end
+        }
       end
     end
   end

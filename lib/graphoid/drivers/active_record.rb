@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Graphoid
   module ActiveRecordDriver
     class << self
@@ -21,34 +23,44 @@ module Graphoid
         type == ActiveRecord::Reflection::HasOneReflection
       end
 
-      def embeds_one?(type)
+      def embeds_one?(_type)
         false
       end
 
-      def embeds_many?(type)
+      def embeds_many?(_type)
         false
       end
 
-      def embedded_in?(type)
+      def embedded_in?(_type)
         false
       end
 
       def types_map
         {
-          binary:  GraphQL::Types::Boolean,
+          binary: GraphQL::Types::Boolean,
           boolean: GraphQL::Types::Boolean,
-          float:   GraphQL::Types::Float,
+          float: GraphQL::Types::Float,
           integer: GraphQL::Types::Int,
-          string:  GraphQL::Types::String,
+          string: GraphQL::Types::String,
 
-          datetime:   Graphoid::Scalars::DateTime,
-          date:       Graphoid::Scalars::DateTime,
-          time:       Graphoid::Scalars::DateTime,
-          timestamp:  Graphoid::Scalars::DateTime,
-          text:       Graphoid::Scalars::Text,
-          bigint:     Graphoid::Scalars::BigInt,
-          decimal:    Graphoid::Scalars::Decimal
+          datetime: Graphoid::Scalars::DateTime,
+          date: Graphoid::Scalars::DateTime,
+          time: Graphoid::Scalars::DateTime,
+          timestamp: Graphoid::Scalars::DateTime,
+          text: Graphoid::Scalars::Text,
+          bigint: Graphoid::Scalars::BigInt,
+          decimal: Graphoid::Scalars::Decimal
         }
+      end
+
+      def class_of(relation)
+        {
+          ActiveRecord::Reflection::HasAndBelongsToManyReflection => ManyToMany,
+          ActiveRecord::Reflection::BelongsToReflection => BelongsTo,
+          ActiveRecord::Reflection::ThroughReflection => ManyToMany,
+          ActiveRecord::Reflection::HasManyReflection => HasMany,
+          ActiveRecord::Reflection::HasOneReflection => HasOne
+        }[relation.class] || Relation
       end
 
       def inverse_name_of(relation)
@@ -89,25 +101,23 @@ module Graphoid
       def parse(attribute, value, operator)
         field = attribute.name
         case operator
-        when "not"
-          parsed = *["#{field} != ?", value]
-          parsed = *["#{field} not like ?", "#{value}"] if attribute.type == :string
-          parsed = *["#{field} is not null"] if value.nil?
-        when "contains", "regex"
-          parsed = *["#{field} like ?", "%#{value}%"]
-        when "gt", "gte", "lt", "lte", "not", "in", "nin"
-          operator = { gt: ">", gte: ">=", lt: "<", lte: "<=", in: "in", nin: "not in" }[operator.to_sym]
-          parsed = *["#{field} #{operator} (?)", value]
+        when 'not'
+          parsed = ["#{field} != ?", value]
+          parsed = ["#{field} not like ?", value.to_s] if attribute.type == :string
+          parsed = ["#{field} is not null"] if value.nil?
+        when 'contains', 'regex'
+          parsed = ["#{field} like ?", "%#{value}%"]
+        when 'gt', 'gte', 'lt', 'lte', 'not', 'in', 'nin'
+          operator = { gt: '>', gte: '>=', lt: '<', lte: '<=', in: 'in', nin: 'not in' }[operator.to_sym]
+          parsed = ["#{field} #{operator} (?)", value]
         else
-          parsed = *["#{field} = ?", value]
+          parsed = ["#{field} = ?", value]
         end
         parsed
       end
 
-      def relate_one(scope, relation, value)
-        field = relation.name
-        parsed = {}
-
+      # TODO: fix this as it is unused
+      def relate_through(scope, relation, value)
         # if relation.has_one_through?
         #   ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&:id)
         #   through = relation.source.options[:through].to_s.camelize.constantize
@@ -115,19 +125,6 @@ module Graphoid
         #   ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&:id)
         #   parsed = *["#{field.underscore}_id in (?)", ids]
         # end
-        
-        if relation.belongs_to?
-          ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&:id)
-          parsed = *["#{field.underscore}_id in (?)", ids]
-        end
-
-        if relation.has_one?
-          field_name = relation.inverse_name || scope.name.underscore
-          ids = Graphoid::Queries::Processor.execute(relation.klass, value).to_a.map(&("#{field_name}_id".to_sym))
-          parsed = *["id in (?)", ids]
-        end
-
-        parsed
       end
 
       def relate_many(scope, relation, value, operator)
@@ -136,19 +133,19 @@ module Graphoid
         target = Graphoid::Queries::Processor.execute(relation.klass, value).to_a
 
         if relation.many_to_many?
-          field_name = field_name.to_s.singularize + "_ids"
-          ids = target.map(&(field_name.to_sym))
+          field_name = field_name.to_s.singularize + '_ids'
+          ids = target.map(&field_name.to_sym)
           ids.flatten!.uniq!
         else
           field_name = :"#{field_name}_id"
-          ids = target.map(&(field_name))
+          ids = target.map(&field_name)
         end
 
-        if operator == "none"
-          parsed = *["id not in (?)", ids] if ids.present?
-        elsif operator == "some"
-          parsed = *["id in (?)", ids]
-        elsif operator == "every"
+        if operator == 'none'
+          parsed = ['id not in (?)', ids] if ids.present?
+        elsif operator == 'some'
+          parsed = ['id in (?)', ids]
+        elsif operator == 'every'
 
           # the following process is a SQL division
           # the amount of queries it executes is on per row
@@ -162,7 +159,7 @@ module Graphoid
             operation = Operation.new(relation.klass, _key, _value)
             parsed = parse(operation.operand, operation.value, operation.operator)
             val = parsed.last.is_a?(String) ? "'#{parsed.last}'" : parsed.last
-            parsed = parsed.first.sub("?", val)
+            parsed = parsed.first.sub('?', val)
             " AND #{parsed}"
           end.join
 
@@ -178,15 +175,13 @@ module Graphoid
                     )
                   "
           result = ActiveRecord::Base.connection.execute(query)
-          ids = result.map{ |row| row["#{field_name}"] }
+          ids = result.map { |row| row[field_name.to_s] }
 
-          parsed = *["id in (?)", ids]
+          parsed = ['id in (?)', ids]
         end
 
         parsed
       end
     end
-
   end
-
 end

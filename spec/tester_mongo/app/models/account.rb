@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Account
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -12,7 +14,7 @@ class Account
 
   graphorbid :forbidden
   field :forbidden, type: Integer
-  
+
   field :integer_field, type: Integer
   field :float_field, type: Float
   field :string_field, type: String
@@ -23,7 +25,7 @@ class Account
   field :datetime_field, type: DateTime
 
   field :array, type: Array
-  field :object, type: Hash 
+  field :object, type: Hash
 
   def graphield0
     string_field.to_s + ' custom 0'
@@ -43,8 +45,8 @@ class Account
   has_many :labels
   belongs_to :house, optional: true
 
-  belongs_to :created_by, class_name: "User", optional: true
-  belongs_to :updated_by, class_name: "User", optional: true
+  belongs_to :created_by, class_name: 'User', optional: true
+  belongs_to :updated_by, class_name: 'User', optional: true
 
   embeds_one :value
   embeds_many :snakes
