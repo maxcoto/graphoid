@@ -1,3 +1,10 @@
+services:
+  - mongodb
+#before_script:
+#  - sleep 15
+#  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 language: ruby
 rvm:
- - 2.5.0
+  - 2.5.0
+script:
+  - DRIVER=ar DEBUG=1 bundle exec rspec
