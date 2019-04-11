@@ -1,3 +1,6 @@
 language: ruby
 rvm:
  - 2.5.0
+script:
+ - bundle exec DEBUG=true DRIVER=ar rspec
+ - bundle exec DEBUG=true DRIVER=mongo rspec
