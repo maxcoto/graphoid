@@ -1,4 +1,9 @@
-# Graphoid
+
+<img src="https://d3a1eqpdtt5fg4.cloudfront.net/items/0T0M3O2R1q2W3i1p3e0A/graphoid.png" height="200" alt="graphoid"/>
+
+[![Build Status](https://travis-ci.org/maxiperezc/graphoid.svg?branch=master)](https://travis-ci.org/maxiperezc/graphoid)
+[![Gem Version](https://badge.fury.io/rb/graphoid.svg)](https://rubygems.org/gems/graphoid)
+
 This gem is used to generate a full GraphQL API using introspection of Mongoid or ActiveRecord models.
 After installing it, you will have create, update, delete, and query actions on any rails models you want.
 
@@ -54,23 +59,22 @@ end
 ```
 
 ## Contributing
-Functionality to sort top level models by association values
-Filter by Array or Hash => The cases are failing, implementation correction needed.
-Revise TODOs in the code
-Make a tutorial video
-Fix Rubocop errors
-Live Reload
-AR eager load
-Relation with aliases tests
-Aggregations
-Remove config / auto-setup AR-Mongo
-Write division for "every" in Mongoid and AR
-Permissions on fields
-has_one_through implementation
-has_many_selves (employee) tests
-has_and_belongs_to_many_selves (followers) tests
-Embedded::Many filtering implementation
-Embedded::One filtering with OR/AND
+- Install code climate
+- Functionality to sort top level models by association values
+- Filter by Array or Hash.
+- Fix Rubocop errors.
+- Live Reload
+- AR eager load
+- Relation with aliases tests
+- Aggregations
+- Remove config / auto-setup AR-Mongo
+- Write division for "every" in Mongoid and AR
+- Permissions on fields
+- has_one_through implementation
+- has_many_selves (employee) tests
+- has_and_belongs_to_many_selves (followers) tests
+- Embedded::Many filtering implementation
+- Embedded::One filtering with OR/AND
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
