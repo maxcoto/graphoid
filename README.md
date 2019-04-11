@@ -1,5 +1,5 @@
 
-<img src="https://d3a1eqpdtt5fg4.cloudfront.net/items/1W3T1M3w3P053u2U411r/Ruby_On_Rails_Logo.svg.png" height="150" alt="graphoid"/>
+<img src="https://d3a1eqpdtt5fg4.cloudfront.net/items/0T0M3O2R1q2W3i1p3e0A/graphoid.png" height="200" alt="graphoid"/>
 
 [![Build Status](https://travis-ci.org/maxiperezc/graphoid.svg?branch=master)](https://travis-ci.org/maxiperezc/graphoid)
 [![Gem Version](https://badge.fury.io/rb/graphoid.svg)](https://rubygems.org/gems/graphoid)
