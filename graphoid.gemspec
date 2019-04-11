@@ -2,16 +2,13 @@
 
 $LOAD_PATH.push File.expand_path('lib', __dir__)
 
-# Maintain your gem's version:
-require 'graphoid/version'
-
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |gem|
   gem.name        = 'graphoid'
-  gem.version     = Graphoid::VERSION
+  gem.version     = '0.0.5'
   gem.authors     = ['Maximiliano Perez Coto']
   gem.email       = ['maxiperezc@gmail.com']
-  gem.homepage    = 'http://www.maxiperezcoto.com'
+  gem.homepage    = 'https://github.com/maxiperezc/graphoid'
   gem.summary     = 'Generates a GraphQL API from Rails ActiveRecord or Mongoid'
   gem.description = 'A gem that helps you autogenerate a GraphQL API from Mongoid or ActiveRecord models.'
   gem.license     = 'MIT'
