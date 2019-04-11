@@ -1,4 +1,4 @@
-# Graphoid with Active Record example
+# Graphoid with ActiveRecord example
 
 ```bash
 $ bundle install
