@@ -1,8 +1,5 @@
 services:
   - mongodb
-#before_script:
-#  - sleep 15
-#  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 language: ruby
 rvm:
   - 2.5.0
