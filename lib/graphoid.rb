@@ -31,7 +31,7 @@ require 'graphoid/drivers/mongoid'
 require 'graphoid/drivers/active_record'
 
 require 'graphoid/definitions/types'
-require 'graphoid/definitions/orders'
+require 'graphoid/definitions/sorter'
 require 'graphoid/definitions/filters'
 require 'graphoid/definitions/inputs'
 

@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 module Graphoid
-  module Orders
+  module Sorter
     LIST = {}
     @@enum_type = nil
 
     class << self
       def generate(model)
         LIST[model] ||= GraphQL::InputObjectType.define do
-          name("#{Utils.graphqlize(model.name)}Order")
-          description("Generated model order for #{model.name}")
+          name("#{Utils.graphqlize(model.name)}Sorter")
+          description("Generated model Sorter for #{model.name}")
 
           Attribute.fields_of(model).each do |field|
             name = Utils.camelize(field.name)
-            argument(name, Orders.enum_type)
+            argument(name, Sorter.enum_type)
           end
 
           Relation.relations_of(model).each do |name, relation|
@@ -32,7 +32,7 @@ module Graphoid
 
       def enum_type
         @@enum_type ||= GraphQL::EnumType.define do
-          name 'OrderType'
+          name 'SorterType'
 
           value 'ASC', 'Ascendent'
           value 'DESC', 'Descendent'

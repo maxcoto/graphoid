@@ -61,7 +61,7 @@ module Graphoid
             next unless relation_type
 
             filter = Graphoid::Filters::LIST[relation_class]
-            order  = Graphoid::Orders::LIST[relation_class]
+            order  = Graphoid::Sorter::LIST[relation_class]
 
             if Relation.new(relation).many?
               plural_name = name.pluralize

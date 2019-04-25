@@ -9,7 +9,7 @@ module Graphoid
       build_naming(model)
 
       @type   = Graphoid::Types.generate(model)
-      @order  = Graphoid::Orders.generate(model)
+      @order  = Graphoid::Sorter.generate(model)
       @input  = Graphoid::Inputs.generate(model)
       @filter = Graphoid::Filters.generate(model)
     end
