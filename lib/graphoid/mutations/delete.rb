@@ -24,21 +24,25 @@ module Graphoid
 
         type.class_eval do
           define_method :"#{name}" do |id:|
-            result = model.find(id)
-            result.destroy!
-            result
-          rescue Exception => ex
-            GraphQL::ExecutionError.new(ex.message)
+            begin
+              result = model.find(id)
+              result.destroy!
+              result
+            rescue Exception => ex
+              GraphQL::ExecutionError.new(ex.message)
+            end
           end
         end
 
         type.class_eval do
           define_method :"#{plural}" do |where: {}|
-            objects = Graphoid::Queries::Processor.execute(model, where.to_h)
-            objects.destroy_all
-            objects.all.to_a
-          rescue Exception => ex
-            GraphQL::ExecutionError.new(ex.message)
+            begin
+              objects = Graphoid::Queries::Processor.execute(model, where.to_h)
+              objects.destroy_all
+              objects.all.to_a
+            rescue Exception => ex
+              GraphQL::ExecutionError.new(ex.message)
+            end
           end
         end
       end

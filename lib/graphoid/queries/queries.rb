@@ -25,23 +25,26 @@ module Graphoid
 
       query_type.class_eval do
         define_method :"#{grapho.name}" do |id: nil, where: nil|
-          return model.find(id) if id
-
-          Processor.execute(model, where.to_h).first
-        rescue Exception => ex
-          GraphQL::ExecutionError.new(ex.message)
+          begin
+            return model.find(id) if id
+            Processor.execute(model, where.to_h).first
+          rescue Exception => ex
+            GraphQL::ExecutionError.new(ex.message)
+          end
         end
       end
 
       query_type.class_eval do
         define_method :"#{grapho.plural}" do |where: nil, order: nil, limit: nil, skip: nil|
-          model = Graphoid.driver.eager_load(context.irep_node, model)
-          result = Processor.execute(model, where.to_h)
-          order = Processor.parse_order(model, order.to_h)
-          result = result.order(order).limit(limit)
-          Graphoid.driver.skip(result, skip)
-        rescue Exception => ex
-          GraphQL::ExecutionError.new(ex.message)
+          begin
+            model = Graphoid.driver.eager_load(context.irep_node, model)
+            result = Processor.execute(model, where.to_h)
+            order = Processor.parse_order(model, order.to_h)
+            result = result.order(order).limit(limit)
+            Graphoid.driver.skip(result, skip)
+          rescue Exception => ex
+            GraphQL::ExecutionError.new(ex.message)
+          end
         end
 
         alias_method :"_#{grapho.plural}_meta", :"#{grapho.plural}"

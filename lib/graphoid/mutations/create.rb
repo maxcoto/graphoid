@@ -24,21 +24,25 @@ module Graphoid
 
         type.class_eval do
           define_method :"#{name}" do |data: {}|
-            user = context[:current_user]
-            Graphoid::Mutations::Processor.execute(model, grapho, data, user)
-          rescue Exception => ex
-            GraphQL::ExecutionError.new(ex.message)
+            begin
+              user = context[:current_user]
+              Graphoid::Mutations::Processor.execute(model, grapho, data, user)
+            rescue Exception => ex
+              GraphQL::ExecutionError.new(ex.message)
+            end
           end
         end
 
         type.class_eval do
           define_method :"#{plural_name}" do |data: []|
-            user = context[:current_user]
-            result = []
-            data.each { |d| result << Graphoid::Mutations::Processor.execute(model, grapho, d, user) }
-            result
-          rescue Exception => ex
-            GraphQL::ExecutionError.new(ex.message)
+            begin 
+              user = context[:current_user]
+              result = []
+              data.each { |d| result << Graphoid::Mutations::Processor.execute(model, grapho, d, user) }
+              result
+            rescue Exception => ex
+              GraphQL::ExecutionError.new(ex.message)
+            end
           end
         end
       end
