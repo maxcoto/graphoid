@@ -4,8 +4,7 @@
 [![Build Status](https://travis-ci.org/maxiperezc/graphoid.svg?branch=master)](https://travis-ci.org/maxiperezc/graphoid)
 [![Gem Version](https://badge.fury.io/rb/graphoid.svg)](https://rubygems.org/gems/graphoid)
 
-This gem is used to generate a full GraphQL API using introspection of Mongoid or ActiveRecord models.
-After installing it, you will have create, update, delete, and query actions on any rails models you want.
+Generates a full GraphQL API using introspection of Mongoid or ActiveRecord models.
 
 ## Dependency
 This gem depends on [the GraphQL gem](https://github.com/rmosolgo/graphql-ruby).
