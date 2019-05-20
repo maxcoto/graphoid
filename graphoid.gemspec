@@ -5,7 +5,7 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |gem|
   gem.name        = 'graphoid'
-  gem.version     = '0.0.10'
+  gem.version     = '0.1.0'
   gem.authors     = ['Maximiliano Perez Coto']
   gem.email       = ['maxiperezc@gmail.com']
   gem.homepage    = 'https://github.com/maxiperezc/graphoid'
