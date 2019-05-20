@@ -114,7 +114,7 @@ module Graphoid
         relation.relation
       end
 
-      def eager_load(selection, model)
+      def eager_load(selection, model, first = true)
         referenced_relations = [
           mongo_constants[:many_to_many],
           mongo_constants[:has_many],
@@ -122,21 +122,27 @@ module Graphoid
           mongo_constants[:belongs_to]
         ]
 
-        properties = Graphoid::Queries::Processor.children_of(selection)
+        properties = first ? Utils.first_children_of(selection) : Utils.children_of(selection)
         inclusions = Utils.symbolize(properties)
 
         Relation.relations_of(model).each do |name, relation|
           name = relation.name
-          next if inclusions.exclude?(name) || referenced_relations.exclude?(association.relation)
+          next if inclusions.exclude?(name) || referenced_relations.exclude?(relation.relation)
 
           subselection = properties[name.to_s.camelize(:lower)]
-          children = Utils.symbolize(Graphoid::Queries::Processor.children_of(subselection))
-          relations = relation.class_name.constantize.reflections.values.map(&:name)
+          subproperties = Utils.children_of(subselection)
+          subchildren = Utils.symbolize(subproperties)
+          subrelations = relation.class_name.constantize.relations.values.map(&:name)
 
-          if (relations & children).empty?
+          if (subrelations & subchildren).empty?
             model = model.includes(name)
           else
-            model = model.includes(name, with: ->(instance) { Graphoid::Queries::Processor.eager_load(subselection, instance) })
+            begin
+              gem "mongoid_includes"
+              model = model.includes(name, with: ->(instance) { eager_load(subselection, instance, false) })
+            rescue Gem::LoadError
+              model = model.includes(name)
+            end
           end
         end
 

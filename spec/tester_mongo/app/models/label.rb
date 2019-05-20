@@ -12,4 +12,5 @@ class Label
   field :amount, type: Float
 
   belongs_to :account
+  has_many :contracts
 end

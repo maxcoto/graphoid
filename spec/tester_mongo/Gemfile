@@ -5,8 +5,9 @@ source 'https://rubygems.org'
 gem 'puma', '~> 3.7'
 gem 'rails', '~> 5.1.6'
 
-gem 'mongoid'
+gem 'mongoid', '~> 6.0'
 gem 'mongoid-rspec'
+gem 'mongoid_includes'
 
 group :development do
   gem 'byebug'

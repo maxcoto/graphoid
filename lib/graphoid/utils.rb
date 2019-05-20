@@ -17,7 +17,15 @@ module Graphoid
       end
 
       def symbolize(fields)
-        fields.keys.map(&:underscore).map(&:to_sym)
+        fields.keys.map { |f| f.underscore.to_sym  }
+      end
+
+      def children_of(selection)
+        selection.scoped_children.values.first
+      end
+      
+      def first_children_of(selection)
+        selection.scoped_children.values.first.values.first.scoped_children.values.first
       end
 
       def underscore(props, fields = [])

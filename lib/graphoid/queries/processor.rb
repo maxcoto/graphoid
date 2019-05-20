@@ -33,10 +33,6 @@ module Graphoid
           end
         end
 
-        def children_of(selection)
-          selection.scoped_children.values[0]
-        end
-
         def parse_order(scope, order)
           fields = Attribute.fieldnames_of(scope)
           Utils.underscore(order, fields)
