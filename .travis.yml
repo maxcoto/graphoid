@@ -2,7 +2,7 @@ services:
   - mongodb
 language: ruby
 rvm:
-  - 2.5.0
+  - 2.4.5
 script:
   - DRIVER=ar DEBUG=1 bundle exec rspec
   - DRIVER=mongo DEBUG=1 bundle exec rspec
