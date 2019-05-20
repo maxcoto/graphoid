@@ -6,14 +6,24 @@
 require 'rails_helper'
 
 describe 'QuerySubFilter', type: :request do
-  let!(:delete) { Account.delete_all }
   subject { Helper.resolve(self, @action, @query) }
 
-  let!(:h0) { House.create!(name: 'h0') }
-  let!(:a0) { Account.create!(integer_field: 2, house: h0) }
-  let!(:p0) { Person.create!(account: a0, name: 'p0', snake_case: 'snake', camelCase: 'camel') }
-  let!(:l0) { Label.create!(account: a0, name: 'l0', amount: 2) }
-  let!(:l1) { Label.create!(account: a0, name: 'l1', amount: 2) }
+  before(:all) do
+    Person.delete_all
+    Label.delete_all
+    Account.delete_all
+    House.delete_all
+
+    @h0 = House.create!(name: 'h0')
+    @a0 = Account.create!(integer_field: 2, house: @h0)
+    @p0 = Person.create!(account: @a0, name: 'p0', snake_case: 'snake', camelCase: 'camel')
+    @l0 = Label.create!(account: @a0, name: 'l0', amount: 2)
+    @l1 = Label.create!(account: @a0, name: 'l1', amount: 2)
+  end
+
+  after(:all) do
+    [@h0, @a0, @p0, @l0, @l1].map(&:destroy)
+  end
 
   describe 'applies filters in related models' do
     it 'when has many' do
@@ -30,7 +40,7 @@ describe 'QuerySubFilter', type: :request do
       }
 
       expect(subject[0]['labels'].size).to eq(1)
-      expect(subject[0]['labels'][0]['id']).to eq l0.id.to_s
+      expect(subject[0]['labels'][0]['id']).to eq @l0.id.to_s
     end
 
     it 'when has one and does not match' do
@@ -62,7 +72,7 @@ describe 'QuerySubFilter', type: :request do
         }
       }
 
-      expect(subject['person']['id']).to eq p0.id.to_s
+      expect(subject['person']['id']).to eq @p0.id.to_s
     end
 
     it 'when belongs to and does not match' do
@@ -94,7 +104,7 @@ describe 'QuerySubFilter', type: :request do
         }
       }
 
-      expect(subject['house']['id']).to eq h0.id.to_s
+      expect(subject['house']['id']).to eq @h0.id.to_s
     end
   end
 end

@@ -83,8 +83,26 @@ module Graphoid
         relation.class
       end
 
-      def eager_load(_selection, model)
-        model
+      def generate_array(nodes)
+        include_array = []
+        nodes.each do |node|
+          children = node.selections.select!{ |n| !n.selections.empty? }
+
+          if children.empty?
+            include_array.push(node.name.to_sym)
+          else
+            include_array.push(node.name.to_sym => generate_array(children))
+          end
+        end
+
+        include_array
+      end
+
+      def eager_load(selection, model)
+        nodes = selection.ast_node.selections.first.selections
+        nodes.select!{ |n| !n.selections.empty? }
+        include_array = generate_array(nodes)
+        include_array.empty? ? model : model.includes(*include_array)
       end
 
       def execute_and(scope, parsed)

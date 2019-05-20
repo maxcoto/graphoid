@@ -6,7 +6,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      current_user: User.create!(name: 'maxi')
+      current_user: User.find_or_create_by!(name: 'maxi')
     }
     result = TesterArSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
