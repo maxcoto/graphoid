@@ -47,10 +47,8 @@ end
 
 ## Examples
 You can find an example that uses ActiveRecord in the [Tester AR folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_ar)
-And an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)
-of this same repository.
-
-<img src="https://d3a1eqpdtt5fg4.cloudfront.net/items/0O0j2k01020x0w0S3t2t/graphoid.png" width="1000" alt="graphoid"/>
+and an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)
+ff this same repository.
 
 ## Contributing
 - Install code climate
