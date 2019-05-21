@@ -8,8 +8,8 @@ module Graphoid
     class << self
       def generate(model)
         Graphoid::Types::Meta ||= GraphQL::ObjectType.define do
-          name('Meta')
-          description('Meta Type')
+          name('xMeta')
+          description('xMeta Type')
           field('count', types.Int)
         end
 
@@ -71,7 +71,7 @@ module Graphoid
                 Graphoid::Types.resolve_many(self, relation_class, relation)
               end
 
-              field "_#{plural_name}_meta", Graphoid::Types::Meta do
+              field "x_meta_#{plural_name}", Graphoid::Types::Meta do
                 Graphoid::Argument.query_many(self, filter, order)
                 Graphoid::Types.resolve_many(self, relation_class, relation)
               end

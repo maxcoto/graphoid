@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe 'QueryAndCount', type: :request do
   let!(:delete) { Account.delete_all }
-  subject { Helper.resolve(self, '_accountsMeta', @query)['count'] }
+  subject { Helper.resolve(self, 'xMetaAccounts', @query)['count'] }
 
   let!(:a0) { Account.create!(snake_case: 'snaki', camelCase: 'camol') }
   let!(:a1) { Account.create!(snake_case: 'snaki', camelCase: 'camol') }
@@ -16,7 +16,7 @@ describe 'QueryAndCount', type: :request do
     it 'with a string camelCased field' do
       @query = %(
         query {
-          _accountsMeta {
+          xMetaAccounts {
             count
           }
         }
@@ -28,7 +28,7 @@ describe 'QueryAndCount', type: :request do
     it 'with a filter' do
       @query = %{
         query {
-          _accountsMeta(where: {
+          xMetaAccounts(where: {
             snakeCase_contains: "ki"
           }) {
             count

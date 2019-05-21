@@ -731,7 +731,7 @@ end</code></pre>
       <div class="code-block">
         <h6>Counts all the records that matches the filter</h6>
         <pre><code class="language-javascript">query {
-  peopleMeta(where: { name: "max" }) {
+  xMetaPeople(where: { name: "max" }) {
     count
   }
 }</code></pre>
@@ -744,7 +744,7 @@ end</code></pre>
       <div class="code-block">
         <h6>Sums all the records that matches the filter.</h6>
         <pre><code class="language-javascript">query {
-  peopleMeta(where: { name: "max" }) {
+  xMetaPeople(where: { name: "max" }) {
     id
     name
     sum(data: ["money"])

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    graphoid (0.0.10)
+    graphoid (0.1.0)
       graphql (~> 1.8.0)
       rails (~> 5)
 
