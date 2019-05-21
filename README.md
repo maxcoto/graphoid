@@ -6,9 +6,12 @@
 
 Generates a full GraphQL API using introspection of Mongoid or ActiveRecord models.
 
+## Full Reference
+The [Full Documentation](https://maxiperezc.github.io/graphoid/) that displays how to use the queries and mutations that Graphoid automatically generates.
+
+
 ## Dependency
 This gem depends on [the GraphQL gem](https://github.com/rmosolgo/graphql-ruby).
-
 Please install that gem first before continuing
 
 ## Installation
@@ -22,20 +25,18 @@ gem 'graphoid'
 $ bundle install
 ```
 
-## Configuration
+## Database
 Create the file `config/initializers/graphoid.rb`
-And configure the database you want to use in it.
+And configure the database you want to use in it (:mongoid or :active_record)
 
 ```ruby
 Graphoid.configure do |config|
   config.driver = :mongoid
-  # or
-  config.driver = :active_record
 end
 ```
 
 ## Usage
-You can determine which models will be visible in the API by including the Graphoid Queries and Mutations
+You can determine which models will be visible in the API by including the Graphoid Queries and Mutations concerns
 
 ```ruby
 class Person
@@ -44,22 +45,10 @@ class Person
 end
 ```
 
-You can also include a special concern that will let you create virtual fields and forbid access to existing fields
-```ruby
-class Person
-  include Graphoid::Graphield
-
-  graphield :full_name, String # virtual fields need to resolve as a method
-  graphorbid :balance # attribute balance will not be exposed in the API
-
-  def full_name
-    "#{first_name} #{last_name}"
-  end
-end
-```
-
 ## Examples
-You can find an example that uses ActiveRecord in the [Tester AR folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_ar) and an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo) of this same repository.
+You can find an example that uses ActiveRecord in the [Tester AR folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_ar)
+And an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)
+of this same repository.
 
 <img src="https://d3a1eqpdtt5fg4.cloudfront.net/items/0O0j2k01020x0w0S3t2t/graphoid.png" width="1000" alt="graphoid"/>
 
