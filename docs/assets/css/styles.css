@@ -58,7 +58,6 @@ a:focus {
 }
 
 code {
-  background: #222;
   color: #fff;
   font-size: 14px;
   font-weight: bold;
@@ -238,7 +237,7 @@ select {
 
 /* ====== Header ====== */
 .header {
-  background: #494d55;
+  background: #222;
   color: rgba(255, 255, 255, 0.85);
   border-top: 5px solid #40babd;
   padding: 30px 0;
@@ -272,7 +271,7 @@ select {
 }
 
 .body-green .branding .text-highlight {
-  color: #75c181;
+  color: #ff6262;
 }
 
 .body-blue .branding .text-highlight {
@@ -306,7 +305,7 @@ select {
 }
 
 .body-green .branding .icon {
-  color: #75c181;
+  color: #ff6262;
 }
 
 .body-blue .branding .icon {
@@ -814,15 +813,15 @@ select {
 
 /* Color Schemes */
 .body-green .header {
-  border-color: #75c181;
+  border-color: #ff6262;
 }
 
 .body-green a {
-  color: #75c181;
+  color: #ff6262;
 }
 
 .body-green a:hover {
-  color: #52b161;
+  color: #ff1a1a;
 }
 
 .body-blue .header {
