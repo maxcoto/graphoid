@@ -6,8 +6,8 @@
 
 Generates a full GraphQL API using introspection of Mongoid or ActiveRecord models.
 
-## Full Reference
-The [Full Documentation](https://maxiperezc.github.io/graphoid/) that displays how to use the queries and mutations that Graphoid automatically generates.
+## API Dodocumentation
+The [API Documentation](https://maxiperezc.github.io/graphoid/) that displays how to use the queries and mutations that Graphoid automatically generates.
 
 
 ## Dependency
@@ -46,9 +46,9 @@ end
 ```
 
 ## Examples
-You can find an example that uses ActiveRecord in the [Tester AR folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_ar)
-and an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)
-ff this same repository.
+You can find an example that uses ActiveRecord in the [Tester AR folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_ar)  
+And an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)  
+In this same repository.
 
 ## Contributing
 - Install code climate
