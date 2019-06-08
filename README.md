@@ -56,7 +56,6 @@ In this same repository.
 - Live Reload
 - Aggregations
 - Permissions on fields
-
 - Relation with aliases tests
 - Write division for "every" in Mongoid and AR
 - Sort top level models by association values
