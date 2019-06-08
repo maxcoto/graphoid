@@ -52,20 +52,21 @@ In this same repository.
 
 ## Contributing
 - Install code climate
-- Functionality to sort top level models by association values
-- Filter by Array or Hash.
 - Fix Rubocop errors.
 - Live Reload
-- Relation with aliases tests
 - Aggregations
-- Remove config / auto-setup AR-Mongo
-- Write division for "every" in Mongoid and AR
 - Permissions on fields
+
+- Relation with aliases tests
+- Write division for "every" in Mongoid and AR
+- Sort top level models by association values
+- Filter by Array or Hash.
 - has_one_through implementation
-- has_many_selves (employee) tests
-- has_and_belongs_to_many_selves (followers) tests
+- has_many_selves tests
+- has_and_belongs_to_many_selves tests
 - Embedded::Many filtering implementation
 - Embedded::One filtering with OR/AND
+
 
 ## Testing
 ```bash
