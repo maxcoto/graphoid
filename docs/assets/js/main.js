@@ -1,15 +1,8 @@
 $(document).ready(function() {
-	
-    /* ===== Stickyfill ===== */
-    /* Ref: https://github.com/wilddeer/stickyfill */
-    // Add browser support to position: sticky
-    var elements = $('.sticky');
-    Stickyfill.add(elements);
 
-
-    /* Activate scrollspy menu */
-    $('body').scrollspy({target: '#doc-menu', offset: 100});
-    
+  /* Activate scrollspy menu */
+  $('body').scrollspy({target: '#doc-menu', offset: 100});
+  
     /* Smooth scrolling */
 	$('a.scrollto').on('click', function(e){
         //store hash
