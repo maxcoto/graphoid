@@ -56,7 +56,6 @@ In this same repository.
 - Filter by Array or Hash.
 - Fix Rubocop errors.
 - Live Reload
-- AR eager load
 - Relation with aliases tests
 - Aggregations
 - Remove config / auto-setup AR-Mongo
