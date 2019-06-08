@@ -1,0 +1,15 @@
+Metrics/MethodLength:
+  Max: 40
+Metrics/LineLength:
+  Max: 150
+Metrics/BlockLength:
+  Max: 40
+Naming/PredicateName:
+  NamePrefixBlacklist:
+    - has_
+Metrics/AbcSize:
+  Max: 30
+Style/IfUnlessModifier:
+  Enabled: false
+Style/Documentation:
+  Enabled: false

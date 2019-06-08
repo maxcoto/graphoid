@@ -18,15 +18,15 @@ module Graphoid
           name("#{name}Type")
           description("Generated model type for #{name}")
 
-          Attribute.fields_of(model).each do |_field|
-            type = Graphoid::Mapper.convert(_field)
-            name = Utils.camelize(_field.name)
+          Attribute.fields_of(model).each do |attribute|
+            type = Graphoid::Mapper.convert(attribute)
+            name = Utils.camelize(attribute.name)
             field(name, type)
 
             model.class_eval do
-              if _field.name.include?('_')
-                define_method :"#{Utils.camelize(_field.name)}" do
-                  method_name = _field.name.to_s
+              if attribute.name.include?('_')
+                define_method :"#{Utils.camelize(attribute.name)}" do
+                  method_name = attribute.name.to_s
                   self[method_name] || send(method_name)
                 end
               end
