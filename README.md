@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/maxiperezc/graphoid.svg?branch=master)](https://travis-ci.org/maxiperezc/graphoid)
 [![Gem Version](https://badge.fury.io/rb/graphoid.svg)](https://rubygems.org/gems/graphoid)
+[![Maintainability](https://api.codeclimate.com/v1/badges/96505308310ca4e7e241/maintainability)](https://codeclimate.com/github/maxiperezc/graphoid/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/96505308310ca4e7e241/test_coverage)](https://codeclimate.com/github/maxiperezc/graphoid/test_coverage)
 
 Generates a full GraphQL API using introspection of Mongoid or ActiveRecord models.
 
@@ -51,8 +53,6 @@ And an example with Mongoid in the [Tester Mongo folder](https://github.com/maxi
 In this same repository.
 
 ## Contributing
-- Install code climate
-- Fix Rubocop errors.
 - Live Reload
 - Aggregations
 - Permissions on fields
