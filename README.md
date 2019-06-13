@@ -52,6 +52,8 @@ You can find an example that uses ActiveRecord in the [Tester AR folder](https:/
 And an example with Mongoid in the [Tester Mongo folder](https://github.com/maxiperezc/graphoid/tree/master/spec/tester_mongo)  
 In this same repository.
 
+
+
 ## Contributing
 - Live Reload
 - Aggregations
@@ -72,6 +74,10 @@ In this same repository.
 $ DRIVER=ar DEBUG=true bundle exec rspec
 $ DRIVER=mongo DEBUG=true bundle exec rspec
 ```
+
+## Thank You !!
+[Ryan Yeske](https://github.com/rcy) for the whole idea and for validating that metaprogramming this was possible.
+[Andres Rafael](https://github.com/aandresrafael) for working so hard on connecting the gem on the frontend and finding its failures.
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
