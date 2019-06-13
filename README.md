@@ -77,6 +77,7 @@ $ DRIVER=mongo DEBUG=true bundle exec rspec
 
 ## Thank You !!
 [Ryan Yeske](https://github.com/rcy) for the whole idea and for validating that metaprogramming this was possible.
+
 [Andres Rafael](https://github.com/aandresrafael) for working so hard on connecting the gem on the frontend and finding its failures.
 
 ## License
