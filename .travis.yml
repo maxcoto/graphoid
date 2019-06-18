@@ -5,7 +5,7 @@ services:
   - mongodb
 language: ruby
 rvm:
-  - 2.4.5
+  - 1.29.8
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -14,4 +14,6 @@ script:
   - DRIVER=ar DEBUG=1 bundle exec rspec
   - DRIVER=mongo DEBUG=1 bundle exec rspec
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.json -p 1
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi

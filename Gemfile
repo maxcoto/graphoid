@@ -9,6 +9,7 @@ gem 'graphql'
 
 group :development, :test do
   gem 'byebug'
+  gem 'simplecov', require: false
 end
 
 group :test do
