@@ -7,6 +7,8 @@ gemspec
 
 gem 'graphql'
 
+gem "nokogiri", ">= 1.10.4"
+
 group :development, :test do
   gem 'byebug'
   gem 'simplecov', require: false
