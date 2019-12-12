@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby '2.4.5'
+ruby '2.6.5'
 
 gemspec
 
 gem 'graphql'
-
 gem "nokogiri", ">= 1.10.4"
 
 group :development, :test do
