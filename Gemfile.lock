@@ -63,7 +63,7 @@ GEM
     graphql (1.8.17)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
-    json (2.2.0)
+    json (2.3.1)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
