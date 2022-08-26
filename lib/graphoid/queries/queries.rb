@@ -10,8 +10,6 @@ module Graphoid
       grapho = Graphoid.build(model)
       query_type = ::Types::QueryType
 
-      binding.pry
-
       query_type.field name: grapho.name, type: grapho.type, null: true do
         argument :id, GraphQL::Types::ID, required: false
         argument :where, grapho.filter, required: false
@@ -26,6 +24,7 @@ module Graphoid
       end
 
       query_type.class_eval do
+        binding.pry
         define_method :"#{grapho.name}" do |id: nil, where: nil|
           begin
             return model.find(id) if id
@@ -37,6 +36,7 @@ module Graphoid
       end
 
       query_type.class_eval do
+        binding.pry
         define_method :"#{grapho.plural}" do |where: nil, order: nil, limit: nil, skip: nil|
           begin
             model = Graphoid.driver.eager_load(context.irep_node, model)
