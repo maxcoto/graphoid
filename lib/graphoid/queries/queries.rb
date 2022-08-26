@@ -24,6 +24,7 @@ module Graphoid
       end
 
       query_type.class_eval do
+        binding.pry
         define_method :"#{grapho.name}" do |id: nil, where: nil|
           begin
             return model.find(id) if id
@@ -35,6 +36,7 @@ module Graphoid
       end
 
       query_type.class_eval do
+        binding.pry
         define_method :"#{grapho.plural}" do |where: nil, order: nil, limit: nil, skip: nil|
           begin
             model = Graphoid.driver.eager_load(context.irep_node, model)
