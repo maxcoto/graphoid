@@ -10,6 +10,8 @@ module Graphoid
       grapho = Graphoid.build(model)
       query_type = ::Types::QueryType
 
+      binding.pry
+
       query_type.field name: grapho.name, type: grapho.type, null: true do
         argument :id, GraphQL::Types::ID, required: false
         argument :where, grapho.filter, required: false
