@@ -67,6 +67,7 @@ module Graphoid
               plural_name = name.pluralize
 
               field plural_name, types[relation_type] do
+                binding.pry
                 Graphoid::Argument.query_many(self, filter, order)
                 Graphoid::Types.resolve_many(self, relation_class, relation)
               end
