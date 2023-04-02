@@ -1,7 +1,11 @@
 # frozen_string_literal: true
+unless Rails.configuration.eager_load
+  require Rails.root.join("app/graphql/tester_schema").to_s
+end
 
 class GraphqlController < ApplicationController
   skip_before_action :verify_authenticity_token
+  #skip_before_action :authenticate!
   
   def execute
     variables = ensure_hash(params[:variables])

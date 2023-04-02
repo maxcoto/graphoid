@@ -7,8 +7,7 @@ module Graphoid
     attr_reader :driver
 
     def initialize
-      Graphoid.driver = configuration&.driver
-      Rails.application.eager_load!
+      Graphoid.driver ||= configuration&.driver
       Graphoid::Scalars.generate
     end
 

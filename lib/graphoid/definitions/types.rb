@@ -34,16 +34,15 @@ module Graphoid
           end
 
           Relation.relations_of(model).each do |_, relation|
-            relation_class = relation.class_name.safe_constantize
-
             message = "in model #{model.name}: skipping relation #{relation.class_name}"
+
+            relation_class = relation.class_name.safe_constantize
             unless relation_class
               warn "Graphoid: warning: #{message} because the model name is not valid" if ENV['DEBUG']
               next
             end
 
-            relation_type = LIST[relation_class]
-            unless relation_type
+            unless relation_class.respond_to?(:graphoid?)
               warn "Graphoid: warning: #{message} because it was not found as a model" if ENV['DEBUG']
               next
             end
@@ -58,26 +57,34 @@ module Graphoid
               end
             end
 
-            next unless relation_type
-
-            filter = Graphoid::Filters::LIST[relation_class]
-            order  = Graphoid::Sorter::LIST[relation_class]
-
             if Relation.new(relation).many?
               plural_name = name.pluralize
 
-              field plural_name, types[relation_type] do
-                Graphoid::Argument.query_many(self, filter, order)
+              field plural_name do
+                type -> { types[LIST[relation_class]] }
+
+                argument :where, -> { Graphoid::Filters::LIST[relation_class] }
+                argument :order, -> { Graphoid::Sorter::LIST[relation_class] }
+                argument :limit, GraphQL::Types::Int
+                argument :skip,  GraphQL::Types::Int
+
                 Graphoid::Types.resolve_many(self, relation_class, relation)
               end
 
-              field "x_meta_#{plural_name}", Graphoid::Types::Meta do
-                Graphoid::Argument.query_many(self, filter, order)
+              field "x_meta_#{plural_name}" do
+                type Graphoid::Types::Meta
+
+                argument :where, -> { Graphoid::Filters::LIST[relation_class] }
+                argument :order, -> { Graphoid::Sorter::LIST[relation_class] }
+                argument :limit, GraphQL::Types::Int
+                argument :skip,  GraphQL::Types::Int
+
                 Graphoid::Types.resolve_many(self, relation_class, relation)
               end
             else
-              field name, relation_type do
-                argument :where, filter
+              field name do
+                type -> { LIST[relation_class] }
+                argument :where, -> { Graphoid::Filters::LIST[relation_class] }
                 Graphoid::Types.resolve_one(self, relation_class, relation)
               end
             end

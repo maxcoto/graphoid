@@ -14,11 +14,8 @@ development:
   database: db/development.sqlite3
 
 test:
-  #<<: *default
-  #database: db/test.sqlite3
-  adapter: sqlite3
-  timeout: 500
-  database: ":memory:"
+  <<: *default
+  database: db/test.sqlite3
 
 production:
   <<: *default

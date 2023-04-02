@@ -68,7 +68,11 @@ module Graphoid
       end
 
       def fields_of(model)
-        model.columns
+        begin 
+          model.columns
+        rescue
+          []
+        end
       end
 
       def relations_of(model)

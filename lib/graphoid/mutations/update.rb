@@ -6,6 +6,8 @@ module Graphoid
       extend ActiveSupport::Concern
 
       included do
+        def self.graphoid?() true end
+
         Graphoid.initialize
         model = self
         grapho = Graphoid.build(model)

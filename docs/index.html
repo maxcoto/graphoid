@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Graphoid v0.1.0</title>
+<title>Graphoid v0.1.1</title>
 <!-- Meta -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -128,6 +128,46 @@ end</code></pre>
   </div>
 </section>
 
+  <section id="usage-section" class="doc-section">
+    <h2 class="section-title">Setup</h2>
+    <div class="section-block">
+      <p>
+        Change your graphql_controller.rb so it looks like this:
+      </p>
+
+      <div id="ruby1">
+        <div class="code-block">
+          <pre><code class="language-ruby">unless Rails.configuration.eager_load
+  require Rails.root.join("app/graphql/tester_schema").to_s
+end
+
+class GraphqlController < ApplicationController
+  protect_from_forgery :null_session
+  #skip_before_action :verify_authenticity_token
+  #skip_before_action :authenticate!
+  ...
+end</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section-block">
+      <p>
+        We have a known problem to load associations when using multiple workers.
+        You puma.rb config should not allow concurrency:
+      </p>
+
+      <div id="ruby1">
+        <div class="code-block">
+          <pre><code class="language-ruby">
+workers ENV.fetch("WEB_CONCURRENCY") { 0 }
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
 
 <section id="usage-section" class="doc-section">
   <h2 class="section-title">Usage</h2>
@@ -137,14 +177,12 @@ end</code></pre>
       You can include either the Queries or Mutations models or both.<br />
       The Queries concern exposes read access by exposing query resolvers in the API.<br />
       The Mutations concern exposes write access by exposing create/update/delete resolvers in the API.
+      Add them after your model relations declaration.
     </p>
 
     <div id="ruby1">
       <div class="code-block">
         <pre><code class="language-ruby">class Person < ApplicationRecord
-  include Graphoid::Queries
-  include Graphoid::Mutations
-
   # columns are 
   # id: integer
   # name: string
@@ -154,6 +192,9 @@ end</code></pre>
   has_many :accounts
   has_one :horse
   belongs_to :country
+
+  include Graphoid::Queries
+  include Graphoid::Mutations
 end</code></pre>
       </div>
     </div>
@@ -668,14 +709,17 @@ end</code></pre>
     <p>
       The Graphield concern can be used to create new virtual attributes .<br />
       A virtual attribute always needs a method with the same name, in order to be resolved.
+      This concern should be included and used before the inclusion of the Queries/Mutations concerns.
     </p>
 
     <div>
       <div class="code-block">
         <pre><code class="language-ruby">class Person
   include Graphoid::Graphield
-
   graphield :full_name, String
+
+  include Graphoid::Queries
+  include Graphoid::Mutations
 
   def full_name
     "#{first_name} #{last_name}"
@@ -846,7 +890,7 @@ end</code></pre>
 
 <nav id="doc-menu" class="nav doc-menu flex-column sticky">
   
-<h5 style="margin-left: 15px;"><a href="https://github.com/maxiperezc/graphoid">Graphoid v0.1.0</a></h5>
+<h5 style="margin-left: 15px;"><a href="https://github.com/maxiperezc/graphoid">Graphoid v0.1.1</a></h5>
   
 <a class="nav-link scrollto" href="#prerequisites-section">Prerequisites</a>
 <a class="nav-link scrollto" href="#installation-section">Installation</a>
